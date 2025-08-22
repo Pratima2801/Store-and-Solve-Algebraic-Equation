@@ -3,10 +3,6 @@ package com.example.equations.util;
 import com.example.equations.model.ExpressionTreeNode;
 import com.example.equations.model.Operator;
 
-/**
- * Rebuilds a readable infix string from an expression tree.
- * Adds parentheses only when needed to preserve precedence/associativity.
- */
 public final class InfixReconstructor {
     private InfixReconstructor() {}
 
@@ -27,8 +23,6 @@ public final class InfixReconstructor {
         String leftStr  = visit(node.getLeft(),  op);
         String rightStr = visit(node.getRight(), op);
 
-        // Wrap children when their precedence is lower than current,
-        // or when associativity would change meaning.
         if (node.getLeft() != null && node.getLeft().isOperator()) {
             Operator lo = Operator.from(node.getLeft().getValue());
             if (lo.precedence < op.precedence) {
@@ -53,7 +47,7 @@ public final class InfixReconstructor {
             if (op.precedence < parentOp.precedence) {
                 expr = "(" + expr + ")";
             }
-            // equal precedence usually ok without extra parens due to the child-side rules above
+           
         }
 
         return expr;

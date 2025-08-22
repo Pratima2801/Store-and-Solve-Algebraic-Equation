@@ -9,6 +9,10 @@ public class EquationSummary {
         this.equation = equation;
     }
 
-    public long getEquationId() { return equationId; }
-    public String getEquation() { return equation; }
+    public long getEquationId() { 
+        return equationId; 
+    }
+    public String getEquation() { 
+        return equation; 
+    }
 }
