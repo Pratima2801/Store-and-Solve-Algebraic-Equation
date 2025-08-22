@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.equations.dto.EquationSummary;
+import com.example.equations.dto.EvaluateEquationRequest;
+import com.example.equations.dto.EvaluateEquationResponse;
 import com.example.equations.dto.StoreEquationRequest;
 import com.example.equations.dto.StoreEquationResponse;
 import com.example.equations.service.EquationService;
@@ -35,6 +38,14 @@ public class EquationController {
     @GetMapping
     public ResponseEntity<List<EquationSummary>> list() {
         return ResponseEntity.ok(service.list());
+    }
+
+    @PostMapping("/{id}/evaluate")
+    public ResponseEntity<EvaluateEquationResponse> evaluate(
+            @PathVariable long id,
+            @Valid @RequestBody EvaluateEquationRequest request
+    ) {
+        return ResponseEntity.ok(service.evaluate(id, request));
     }
        
 }

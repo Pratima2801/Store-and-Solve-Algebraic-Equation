@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.equations.dto.EquationSummary;
+import com.example.equations.dto.EvaluateEquationRequest;
+import com.example.equations.dto.EvaluateEquationResponse;
 import com.example.equations.dto.StoreEquationRequest;
 import com.example.equations.dto.StoreEquationResponse;
 import com.example.equations.exception.BadRequestException;
@@ -16,6 +18,9 @@ import com.example.equations.util.InfixReconstructor;
 import com.example.equations.util.InfixToPostfixConverter;
 import com.example.equations.util.InfixTokenizer;
 import com.example.equations.util.PostfixTreeBuilder;
+import com.example.equations.exception.NotFoundException; 
+import com.example.equations.util.EquationEvaluator; 
+import java.util.Map;  
 
 
 @Service
@@ -44,6 +49,25 @@ public class EquationService {
         return repo.findAll().stream()
                 .map(eq -> new EquationSummary(eq.getId(), InfixReconstructor.toInfix(eq.getRoot())))
                 .collect(Collectors.toList());
+    }
+
+    public EvaluateEquationResponse evaluate(long id, EvaluateEquationRequest req) {
+        if (req == null || req.getVariables() == null) {
+            throw new BadRequestException("Request must contain 'variables'");
+        }
+
+        var equation = repo.find(id).orElseThrow(() ->
+                new NotFoundException("Equation with id " + id + " not found"));
+
+        Map<String, Double> vars = req.getVariables();
+        double result = EquationEvaluator.evaluate(equation.getRoot(), vars);
+
+        return new EvaluateEquationResponse(
+                equation.getId(),
+                InfixReconstructor.toInfix(equation.getRoot()),
+                vars,
+                result
+        );
     }
     
 }
