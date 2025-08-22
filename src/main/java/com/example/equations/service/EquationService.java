@@ -1,17 +1,22 @@
 package com.example.equations.service;
 
-import com.example.equations.dto.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.example.equations.dto.EquationSummary;
+import com.example.equations.dto.StoreEquationRequest;
 import com.example.equations.dto.StoreEquationResponse;
 import com.example.equations.exception.BadRequestException;
 import com.example.equations.model.ExpressionTreeNode;
-import com.example.equations.model.*;
+import com.example.equations.model.Token;
 import com.example.equations.repository.InMemoryEquationRepository;
+import com.example.equations.util.InfixReconstructor;
 import com.example.equations.util.InfixToPostfixConverter;
 import com.example.equations.util.InfixTokenizer;
 import com.example.equations.util.PostfixTreeBuilder;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class EquationService {
@@ -33,6 +38,12 @@ public class EquationService {
 
         long id = repo.save(req.getEquation().trim(), root);
         return new StoreEquationResponse("Equation stored successfully", id);
+    }
+
+    public List<EquationSummary> list() {
+        return repo.findAll().stream()
+                .map(eq -> new EquationSummary(eq.getId(), InfixReconstructor.toInfix(eq.getRoot())))
+                .collect(Collectors.toList());
     }
     
 }

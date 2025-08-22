@@ -1,11 +1,15 @@
 package com.example.equations.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.equations.dto.EquationSummary;
 import com.example.equations.dto.StoreEquationRequest;
 import com.example.equations.dto.StoreEquationResponse;
 import com.example.equations.service.EquationService;
@@ -26,6 +30,11 @@ public class EquationController {
     @PostMapping("/store")
     public ResponseEntity<StoreEquationResponse> store(@Valid @RequestBody StoreEquationRequest request) {
         return ResponseEntity.ok(service.store(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EquationSummary>> list() {
+        return ResponseEntity.ok(service.list());
     }
        
 }
